@@ -1,5 +1,6 @@
 import React from "react";
-import { FormControl, MenuItem, Select, Grid, Typography } from "@mui/material";
+import { FormControl, MenuItem, Select, Typography } from "@mui/material";
+import Grid from "@mui/material/Grid";
 
 interface PaymentDatePickerProps {
   years: number[];
@@ -14,7 +15,7 @@ export const PaymentDatePicker: React.FC<PaymentDatePickerProps> = ({
         תאריך תשלום
       </Typography>
       <Grid container spacing={2}>
-        <Grid item xs={6}>
+        <Grid item xs={6} component="div" {...({} as any)}>
           <FormControl fullWidth>
             <Select name="paymentDate" required defaultValue="" displayEmpty>
               <MenuItem value="" disabled>
@@ -45,7 +46,7 @@ export const PaymentDatePicker: React.FC<PaymentDatePickerProps> = ({
           </FormControl>
         </Grid>
 
-        <Grid item xs={6}>
+        <Grid item xs={6} component="div" {...({} as any)}>
           <FormControl fullWidth>
             <Select name="paymentYear" required defaultValue="" displayEmpty>
               <MenuItem value="" disabled>
