@@ -1,5 +1,5 @@
 import React from "react";
-import { Paper, Stack, Button, Typography, Box, useTheme } from "@mui/material";
+import { Paper, Button, Typography, Box } from "@mui/material";
 import { Send, Edit, Delete } from "@mui/icons-material";
 import { Contact } from "../../types/contact";
 import EditContactDialog from "./EditContactDialog";
@@ -18,7 +18,6 @@ const ContactCard: React.FC<Props> = ({ contact, onDelete, onUpdate }) => {
   const edit = useEditContactDialog(contact.name, contact.email);
   const del = useDeleteContactDialog();
   const actions = useContactActions();
-  const theme = useTheme();
 
   const handleConfirmUpdate = async () => {
     await actions.updateContact(contact.id, edit.name, edit.email, () => {
@@ -40,26 +39,20 @@ const ContactCard: React.FC<Props> = ({ contact, onDelete, onUpdate }) => {
         elevation={2}
         sx={{
           display: "flex",
-          flexDirection: { xs: "column", sm: "row" },
+          flexDirection: { xs: "column", sm: "row-reverse" }, // מימין לשמאל בדסקטופ
           justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: { xs: "stretch", sm: "center" },
           p: 2,
           borderRadius: 3,
           gap: 2,
-          transition: "all 0.3s ease",
-          "&:hover": {
-            boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-            transform: "translateY(-2px)",
-          },
         }}
       >
+        {/* פרטי איש הקשר - בצד ימין בדסקטופ */}
         <Box
           sx={{
             textAlign: { xs: "left", sm: "right" },
             flexGrow: 1,
-            [theme.breakpoints.up("sm")]: {
-              width: "auto",
-            },
+            minWidth: 0,
           }}
         >
           <Typography variant="subtitle1" fontWeight="bold">
@@ -70,60 +63,41 @@ const ContactCard: React.FC<Props> = ({ contact, onDelete, onUpdate }) => {
           </Typography>
         </Box>
 
-        <Stack
-          direction={{ xs: "column", sm: "row" }}
-          spacing={1}
+        {/* כפתורי הפעולה - בצד שמאל בדסקטופ */}
+        <Box
           sx={{
-            flexShrink: 0,
-            width: { xs: "100%", sm: "auto" },
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            gap: 1,
+            flexWrap: "wrap",
+            alignItems: "center",
           }}
         >
           <Button
-            fullWidth
             variant="contained"
             color="success"
             onClick={() => actions.sendMessage(contact.name, contact.email)}
             startIcon={<Send />}
-            sx={{
-              transition: "all 0.2s ease",
-              "&:hover": {
-                transform: "scale(1.05)",
-              },
-            }}
           >
             שלח
           </Button>
           <Button
-            fullWidth
             variant="contained"
             color="info"
             onClick={edit.openDialog}
             startIcon={<Edit />}
-            sx={{
-              transition: "all 0.2s ease",
-              "&:hover": {
-                transform: "scale(1.05)",
-              },
-            }}
           >
             ערוך
           </Button>
           <Button
-            fullWidth
             variant="contained"
             color="error"
             onClick={del.openDialog}
             startIcon={<Delete />}
-            sx={{
-              transition: "all 0.2s ease",
-              "&:hover": {
-                transform: "scale(1.05)",
-              },
-            }}
           >
             מחק
           </Button>
-        </Stack>
+        </Box>
       </Paper>
 
       <EditContactDialog
