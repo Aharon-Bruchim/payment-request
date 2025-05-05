@@ -1,5 +1,5 @@
 import React from "react";
-import { Paper, Stack, Button, Typography, Box } from "@mui/material";
+import { Paper, Button, Typography, Box } from "@mui/material";
 import { Send, Edit, Delete } from "@mui/icons-material";
 import { Contact } from "../../types/contact";
 import EditContactDialog from "./EditContactDialog";
@@ -39,13 +39,40 @@ const ContactCard: React.FC<Props> = ({ contact, onDelete, onUpdate }) => {
         elevation={2}
         sx={{
           display: "flex",
+          flexDirection: { xs: "column", sm: "row-reverse" }, // מימין לשמאל בדסקטופ
           justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: { xs: "stretch", sm: "center" },
           p: 2,
           borderRadius: 3,
+          gap: 2,
         }}
       >
-        <Stack direction="row" spacing={2}>
+        {/* פרטי איש הקשר - בצד ימין בדסקטופ */}
+        <Box
+          sx={{
+            textAlign: { xs: "left", sm: "right" },
+            flexGrow: 1,
+            minWidth: 0,
+          }}
+        >
+          <Typography variant="subtitle1" fontWeight="bold">
+            {contact.name}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" noWrap>
+            {contact.email}
+          </Typography>
+        </Box>
+
+        {/* כפתורי הפעולה - בצד שמאל בדסקטופ */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            gap: 1,
+            flexWrap: "wrap",
+            alignItems: "center",
+          }}
+        >
           <Button
             variant="contained"
             color="success"
@@ -54,7 +81,6 @@ const ContactCard: React.FC<Props> = ({ contact, onDelete, onUpdate }) => {
           >
             שלח
           </Button>
-
           <Button
             variant="contained"
             color="info"
@@ -63,7 +89,6 @@ const ContactCard: React.FC<Props> = ({ contact, onDelete, onUpdate }) => {
           >
             ערוך
           </Button>
-
           <Button
             variant="contained"
             color="error"
@@ -72,15 +97,6 @@ const ContactCard: React.FC<Props> = ({ contact, onDelete, onUpdate }) => {
           >
             מחק
           </Button>
-        </Stack>
-
-        <Box textAlign="right">
-          <Typography variant="subtitle1" fontWeight="bold">
-            {contact.name}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {contact.email}
-          </Typography>
         </Box>
       </Paper>
 
