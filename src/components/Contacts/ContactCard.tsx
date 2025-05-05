@@ -40,7 +40,7 @@ const ContactCard: React.FC<Props> = ({ contact, onDelete, onUpdate }) => {
         elevation={2}
         sx={{
           display: "flex",
-          flexDirection: { xs: "column", sm: "row" },
+          flexDirection: { xs: "column", sm: "row-reverse" },
           justifyContent: "space-between",
           alignItems: "center",
           p: 2,
@@ -55,11 +55,12 @@ const ContactCard: React.FC<Props> = ({ contact, onDelete, onUpdate }) => {
       >
         <Box
           sx={{
-            textAlign: { xs: "left", sm: "right" },
+            display: "flex",
+            flexDirection: "column",
+            textAlign: { xs: "center", sm: "right" },
             flexGrow: 1,
-            [theme.breakpoints.up("sm")]: {
-              width: "auto",
-            },
+            ml: { sm: 4 },
+            mt: { xs: 1, sm: 0 },
           }}
         >
           <Typography variant="subtitle1" fontWeight="bold">

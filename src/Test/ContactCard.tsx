@@ -39,7 +39,7 @@ const ContactCard: React.FC<Props> = ({ contact, onDelete, onUpdate }) => {
         elevation={2}
         sx={{
           display: "flex",
-          flexDirection: { xs: "column", sm: "row-reverse" }, // מימין לשמאל בדסקטופ
+          flexDirection: { xs: "column", sm: "row-reverse" },
           justifyContent: "space-between",
           alignItems: { xs: "stretch", sm: "center" },
           p: 2,
@@ -47,7 +47,6 @@ const ContactCard: React.FC<Props> = ({ contact, onDelete, onUpdate }) => {
           gap: 2,
         }}
       >
-        {/* פרטי איש הקשר - בצד ימין בדסקטופ */}
         <Box
           sx={{
             textAlign: { xs: "left", sm: "right" },
