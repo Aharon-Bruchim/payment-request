@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import { StyledPaymentPreview } from "./StyledPaymentPreview";
 import html2pdf from "html2pdf.js";
-import emailjs from "@emailjs/browser";
 
 interface Props {
   prefillClientName?: string;
@@ -35,7 +34,8 @@ export const PaymentRequestForm: React.FC<Props> = ({
     account: "66806",
   };
 
-  const generateFullData = (form: HTMLFormElement) => {
+  const generateFullData = (): any => {
+    const form = document.querySelector("form") as HTMLFormElement;
     const data = Object.fromEntries(new FormData(form).entries());
     return {
       ...data,
@@ -45,12 +45,15 @@ export const PaymentRequestForm: React.FC<Props> = ({
   };
 
   const downloadPdf = async () => {
-    if (previewRef.current && formData) {
+    const fullData = generateFullData();
+    setFormData(fullData);
+
+    if (previewRef.current) {
       html2pdf()
         .from(previewRef.current)
         .set({
           margin: 1,
-          filename: `בקשת תשלום ${formData.clientName} ${formData.date}.pdf`,
+          filename: `בקשת תשלום ${fullData.clientName} ${fullData.date}.pdf`,
           html2canvas: { scale: 2 },
           jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
         })
@@ -58,72 +61,60 @@ export const PaymentRequestForm: React.FC<Props> = ({
     }
   };
 
-  const sendEmail = async () => {
-    if (!previewRef.current || !formData) return;
-
-    const blob = await html2pdf()
-      .from(previewRef.current)
-      .set({
-        margin: 1,
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-      })
-      .outputPdf("blob");
-
-    const formDataEmail = new FormData();
-    formDataEmail.append(
-      "file",
-      blob,
-      `בקשת תשלום ${formData.clientName} ${formData.date}.pdf`
-    );
-    formDataEmail.append("client_name", formData.clientName);
-    formDataEmail.append("message", "מצורפת בקשת תשלום");
-
-    try {
-      await emailjs.send(
-        "service_3rfaadk", // service ID
-        "template_ay60kcb", // template ID
-        {
-          client_name: formData.clientName,
-          amount: formData.amount,
-          date: formData.date,
-          studentCount: formData.studentCount,
-          sessionCount: formData.sessionCount,
-          comments: formData.comments,
-          bank: formData.bank, // חדש
-          branch: formData.branch, // חדש
-          account: formData.account, // חדש
-          clientEmail: formData.clientEmail,
-          message: "מצורפת בקשת תשלום",
-        },
-        "kshQYfqBFW6hnjIIA" // public key
-      );
-
-      alert("המייל נשלח בהצלחה!");
-    } catch (error) {
-      console.error("שגיאה בשליחת המייל:", error);
-      alert("אירעה שגיאה בשליחת המייל.");
-    }
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const fullData = generateFullData(form);
+  const openMailClient = async () => {
+    const fullData = generateFullData();
     setFormData(fullData);
+
+    if (previewRef.current) {
+      await html2pdf()
+        .from(previewRef.current)
+        .set({
+          margin: 1,
+          filename: `בקשת תשלום ${fullData.clientName} ${fullData.date}.pdf`,
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        })
+        .save();
+    }
+
+    const subject = `בקשת תשלום משירה `;
+    const body = `
+  שלום,
+
+   בקשת תשלום עבור ${fullData.clientName} בסך ${fullData.amount} ₪.
+  
+  📅 תאריך: ${fullData.date}
+  👨‍🏫 מספר תלמידים: ${fullData.studentCount || "-"}
+  📚 מספר שיעורים: ${fullData.sessionCount || "-"}
+  💬 הערות: ${fullData.comments || "-"}
+  
+
+  פרטי בנק:
+  🏦 בנק: ${fullData.bank}
+  🏢 סניף: ${fullData.branch}
+  📄 חשבון: ${fullData.account}
+  
+מצורף PDF עם פרטי הבקשה.  
+  תודה רבה!
+    `.trim();
+
+    const mailtoLink = `mailto:${
+      fullData.clientEmail
+    }?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(mailtoLink, "_blank");
   };
 
   return (
     <Container maxWidth="sm">
-      <form onSubmit={handleSubmit}>
+      <form>
         <TextField
           fullWidth
           label="סכום"
           name="amount"
           required
           margin="normal"
+          type="number"
         />
-
         <Box my={2}>
           <Typography variant="subtitle2" fontWeight="bold">
             פרטי בנק:
@@ -143,7 +134,6 @@ export const PaymentRequestForm: React.FC<Props> = ({
           name="date"
           defaultValue={defaultDate}
           margin="normal"
-          slotProps={{ inputLabel: { shrink: true } }}
         />
         <TextField
           fullWidth
@@ -151,6 +141,7 @@ export const PaymentRequestForm: React.FC<Props> = ({
           name="studentCount"
           type="number"
           margin="normal"
+          required
         />
         <TextField
           fullWidth
@@ -158,6 +149,7 @@ export const PaymentRequestForm: React.FC<Props> = ({
           name="sessionCount"
           type="number"
           margin="normal"
+          required
         />
         <TextField
           fullWidth
@@ -174,6 +166,14 @@ export const PaymentRequestForm: React.FC<Props> = ({
           required
           margin="normal"
           defaultValue={prefillClientName}
+          inputProps={{
+            readOnly: true,
+            style: {
+              backgroundColor: "#f5f5f5",
+              color: "#888",
+              cursor: "not-allowed",
+            },
+          }}
         />
         <TextField
           fullWidth
@@ -181,44 +181,55 @@ export const PaymentRequestForm: React.FC<Props> = ({
           name="clientEmail"
           defaultValue={prefillClientEmail}
           margin="normal"
-          slotProps={{
-            input: {
-              readOnly: true,
-              style: {
-                backgroundColor: "#f5f5f5",
-                color: "#888",
-                cursor: "not-allowed",
-              },
-            },
-            inputLabel: {
-              shrink: true,
+          inputProps={{
+            readOnly: true,
+            style: {
+              backgroundColor: "#f5f5f5",
+              color: "#888",
+              cursor: "not-allowed",
             },
           }}
         />
-
-        <Stack direction="row" spacing={2} mt={2}>
-          <Button fullWidth type="submit" variant="contained" color="primary">
-            הכנת בקשה
-          </Button>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+            gap: 2,
+            mt: 2,
+          }}
+        >
           <Button
-            fullWidth
             onClick={downloadPdf}
-            disabled={!formData}
             variant="outlined"
             color="secondary"
+            sx={{
+              width: "calc(50% - 8px)",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                transform: "translateY(-2px)",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+              },
+            }}
           >
             הורד PDF
           </Button>
           <Button
-            fullWidth
-            onClick={sendEmail}
-            disabled={!formData}
+            onClick={openMailClient}
             variant="outlined"
             color="success"
+            sx={{
+              width: "calc(50% - 8px)",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                transform: "translateY(-2px)",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+              },
+            }}
           >
-            שלח במייל
+            פתח מייל לשליחה
           </Button>
-        </Stack>
+        </Box>
       </form>
 
       {formData && (

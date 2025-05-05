@@ -11,7 +11,7 @@ export const createPaymentPdf = async (formData: any) => {
   pdfDoc.registerFontkit(fontkit);
   const font = await pdfDoc.embedFont(fontBytes);
 
-  const page = pdfDoc.addPage([595, 842]); // A4
+  const page = pdfDoc.addPage([595, 842]);
   const { height } = page.getSize();
 
   let y = height - 60;
