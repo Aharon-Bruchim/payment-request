@@ -30,6 +30,11 @@ export const StyledPaymentPreview = forwardRef<HTMLDivElement, Props>(
           justifyContent: "center",
         }}
       >
+        <img
+          src="/logo.png"
+          alt="לוגו כינורות"
+          style={{ width: 120, marginBottom: 16 }}
+        />
         <Typography
           variant="h5"
           fontWeight="bold"
