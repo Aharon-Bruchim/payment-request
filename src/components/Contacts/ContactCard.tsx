@@ -1,5 +1,5 @@
 import React from "react";
-import { Paper, Stack, Button, Typography, Box, useTheme } from "@mui/material";
+import { Paper, Stack, Button, Typography, Box } from "@mui/material";
 import { Send, Edit, Delete } from "@mui/icons-material";
 import { Contact } from "../../types/contact";
 import EditContactDialog from "./EditContactDialog";
@@ -18,7 +18,6 @@ const ContactCard: React.FC<Props> = ({ contact, onDelete, onUpdate }) => {
   const edit = useEditContactDialog(contact.name, contact.email);
   const del = useDeleteContactDialog();
   const actions = useContactActions();
-  const theme = useTheme();
 
   const handleConfirmUpdate = async () => {
     await actions.updateContact(contact.id, edit.name, edit.email, () => {

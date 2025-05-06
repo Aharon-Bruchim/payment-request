@@ -59,17 +59,19 @@ export const PaymentRequestForm: React.FC<Props> = ({
     const fullData = generateFullData();
     setFormData(fullData);
 
-    if (previewRef.current) {
-      html2pdf()
-        .from(previewRef.current)
-        .set({
-          margin: 1,
-          filename: `בקשת תשלום ${fullData.clientName} ${fullData.date}.pdf`,
-          html2canvas: { scale: 2 },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        })
-        .save();
-    }
+    setTimeout(() => {
+      if (previewRef.current) {
+        html2pdf()
+          .from(previewRef.current)
+          .set({
+            margin: 1,
+            filename: `בקשת תשלום ${fullData.clientName} ${fullData.date}.pdf`,
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+          })
+          .save();
+      }
+    }, 100);
   };
 
   const openMailClient = async () => {

@@ -49,7 +49,10 @@ export const PaymentRequestForm: React.FC<Props> = ({
       html2pdf()
         .from(previewRef.current)
         .set({
-          margin: 1,
+          margin: 0,
+          format: "auto",
+          unit: "mm",
+          orientation: "portrait",
           filename: `בקשת תשלום ${formData.clientName} ${formData.date}.pdf`,
           html2canvas: { scale: 2 },
           jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },

@@ -11,10 +11,10 @@ export const StyledPaymentPreview = forwardRef<HTMLDivElement, Props>(
       ref={ref}
       sx={{
         width: "100%",
-        background: "#f5f5f5",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        backgroundSize: "cover",
         paddingY: 6,
       }}
     >
@@ -25,42 +25,61 @@ export const StyledPaymentPreview = forwardRef<HTMLDivElement, Props>(
           p: 4,
           borderRadius: 3,
           background: "#fff",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
+          position: "relative",
+          overflow: "hidden",
         }}
       >
-        <Typography
-          variant="h5"
-          fontWeight="bold"
-          gutterBottom
-          color="primary"
-          textAlign="center"
-        >
-          בקשת תשלום עבור {data.clientName} תאריך: {data.date}
-        </Typography>
-        <Stack spacing={1} dir="rtl">
-          <Typography>💰 סכום לתשלום: {data.amount} ₪</Typography>
-          <Box
-            sx={{
-              backgroundColor: "#f9f9f9",
-              border: "1px solid #ddd",
-              borderRadius: 2,
-              p: 2,
-              mt: 3,
-            }}
-          >
-            <Typography>🧾פרטי בנק להעברה:</Typography>
-            <Typography>🏦 בנק: {data.bank}</Typography>
-            <Typography>🏢 סניף: {data.branch}</Typography>
-            <Typography>📄 מספר חשבון: {data.account}</Typography>
-          </Box>
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundImage: 'url("/background_pdf.png")',
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+            backgroundSize: "cover",
+            opacity: 0.3,
+            zIndex: 0,
+          }}
+        />
 
-          <Typography>📆 תאריך: {data.date || "לא הוזן"}</Typography>
-          <Typography>👨‍🎓 מספר תלמידים: {data.studentCount}</Typography>
-          <Typography>📚 מספר שיעורים: {data.sessionCount}</Typography>
-          <Typography>📝 הערות: {data.comments}</Typography>
-        </Stack>
+        <Box sx={{ position: "relative", zIndex: 1 }}>
+          <Typography
+            variant="h5"
+            fontWeight="bold"
+            gutterBottom
+            color="primary"
+            textAlign="center"
+          >
+            בקשת תשלום עבור {data.clientName} תאריך: {data.date}
+          </Typography>
+
+          <Stack spacing={1} dir="rtl">
+            <Typography>💰 סכום לתשלום: {data.amount} ₪</Typography>
+            <Typography>📆 תאריך: {data.date || "לא הוזן"}</Typography>
+            <Typography>👨‍🎓 מספר תלמידים: {data.studentCount}</Typography>
+            <Typography>📚 מספר שיעורים: {data.sessionCount}</Typography>
+            <Typography>📝 הערות: {data.comments}</Typography>
+
+            <Box
+              sx={{
+                // backgroundColor: "#f9f9f9",
+                border: "1px solid #bbb",
+                borderRadius: 2,
+                p: 2,
+                mt: 3,
+                textAlign: "right",
+              }}
+            >
+              <Typography>🧾 פרטי בנק להעברה:</Typography>
+              <Typography>🏦 בנק: {data.bank}</Typography>
+              <Typography>🏢 סניף: {data.branch}</Typography>
+              <Typography>📄 מספר חשבון: {data.account}</Typography>
+            </Box>
+          </Stack>
+        </Box>
       </Paper>
     </Box>
   )
