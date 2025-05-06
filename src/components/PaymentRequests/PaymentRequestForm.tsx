@@ -87,15 +87,14 @@ export const PaymentRequestForm: React.FC<Props> = ({
           html2canvas: { scale: 2 },
           jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
         })
-        .save(); // ⬅️ יוריד את ה-PDF
+        .save();
     }
 
-    // רק אחרי ההורדה – נפתח את המייל
-    const subject = `בקשת תשלום משירה`;
+    const subject = `בקשת תשלום משירה `;
     const body = `
   שלום,
-  
-  בקשת תשלום עבור ${fullData.clientName} בסך ${fullData.amount} ₪.
+
+   בקשת תשלום עבור ${fullData.clientName} בסך ${fullData.amount} ₪.
   
   📅 תאריך: ${fullData.date}
   👨‍🏫 מספר תלמידים: ${fullData.studentCount || "-"}
@@ -107,16 +106,14 @@ export const PaymentRequestForm: React.FC<Props> = ({
   🏢 סניף: ${fullData.branch}
   📄 חשבון: ${fullData.account}
   
-  מצורף PDF עם פרטי הבקשה.  
+מצורף PDF עם פרטי הבקשה.  
   תודה רבה!
     `.trim();
 
     const mailtoLink = `mailto:${
       fullData.clientEmail
     }?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    setTimeout(() => {
-      window.open(mailtoLink, "_blank");
-    }, 500);
+    window.open(mailtoLink, "_blank");
   };
 
   return (
