@@ -19,7 +19,7 @@ export const useNewContactForm = (redirectTo: string = "/contacts") => {
       return false;
     }
     if (!email.trim() || !isValidEmail(email)) {
-      toast.error("אימייל לא תקין");
+      toast.error(`${email} לא כתובת מייל תקינה`);
       return false;
     }
     return true;
@@ -30,11 +30,11 @@ export const useNewContactForm = (redirectTo: string = "/contacts") => {
     try {
       setLoading(true);
       await FirestoreClient.insertOne<Contact>("contacts", { name, email });
-      toast.success("איש הקשר נוסף בהצלחה");
+      toast.success(`${name} נוסף בהצלחה`);
       navigate(redirectTo);
     } catch (err) {
       console.error(err);
-      toast.error("שגיאה בשמירת איש הקשר");
+      toast.error(`שגיאה בהוספת ${name}`);
     } finally {
       setLoading(false);
     }

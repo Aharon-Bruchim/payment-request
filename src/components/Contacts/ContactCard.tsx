@@ -27,7 +27,7 @@ const ContactCard: React.FC<Props> = ({ contact, onDelete, onUpdate }) => {
   };
 
   const handleConfirmDelete = async () => {
-    await actions.deleteContact(contact.id, () => {
+    await actions.deleteContact(contact.id, contact.name, () => {
       onDelete(contact.id);
       del.closeDialog();
     });

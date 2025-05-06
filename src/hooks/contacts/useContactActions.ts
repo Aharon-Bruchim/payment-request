@@ -22,22 +22,26 @@ export const useContactActions = () => {
   ) => {
     try {
       await FirestoreClient.updateOne("contacts", id, { name, email });
-      toast.success("איש הקשר עודכן");
+      toast.success(`${name} עודכן בהצלחה`);
       onSuccess();
     } catch (err) {
       console.error(err);
-      toast.error("שגיאה בעדכון");
+      toast.error(`שגיאה בעדכון ${name}`);
     }
   };
 
-  const deleteContact = async (id: string, onSuccess: () => void) => {
+  const deleteContact = async (
+    id: string,
+    name: string,
+    onSuccess: () => void
+  ) => {
     try {
       await FirestoreClient.deleteOne("contacts", id);
-      toast.success("איש הקשר נמחק");
+      toast.success(`${name} נמחק בהצלחה`);
       onSuccess();
     } catch (err) {
       console.error(err);
-      toast.error("שגיאה במחיקה");
+      toast.error(`שגיאה במחיקת ${name}`);
     }
   };
 
