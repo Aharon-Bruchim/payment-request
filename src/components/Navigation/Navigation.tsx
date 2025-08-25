@@ -1,8 +1,8 @@
-import React from "react";
+import { memo } from "react";
 import { AppBar, Toolbar, Typography, Button } from "@mui/material";
 import { Link } from "react-router-dom";
 
-export const Navigation: React.FC = () => {
+export const Navigation = memo(function Navigation() {
   return (
     <AppBar position="static">
       <Toolbar>
@@ -18,4 +18,4 @@ export const Navigation: React.FC = () => {
       </Toolbar>
     </AppBar>
   );
-};
+});

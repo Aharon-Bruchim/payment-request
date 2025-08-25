@@ -1,4 +1,3 @@
-import React from "react";
 import { Paper, Stack, Button, Typography, Box } from "@mui/material";
 import { Send, Edit, Delete } from "@mui/icons-material";
 import { Contact } from "../../types/contact";
@@ -6,32 +5,27 @@ import EditContactDialog from "./EditContactDialog";
 import DeleteContactDialog from "./DeleteContactDialog";
 import { useEditContactDialog } from "../../hooks/contacts/useEditContactDialog";
 import { useDeleteContactDialog } from "../../hooks/contacts/useDeleteContactDialog";
-import { useContactActions } from "../../hooks/contacts/useContactActions";
+import { useContacts } from "../../hooks/contacts/useContacts";
 
-interface Props {
-  contact: Contact;
-  onDelete: (id: string) => void;
-  onUpdate: () => void;
-}
-
-const ContactCard: React.FC<Props> = ({ contact, onDelete, onUpdate }) => {
+export default function ContactCard({ contact }: { contact: Contact }) {
   const edit = useEditContactDialog(contact.name, contact.email);
   const del = useDeleteContactDialog();
-  const actions = useContactActions();
+
+  const { deleteId, updateId, sendMessage, updateContact, deleteContact } =
+    useContacts({ autoFetch: false });
 
   const handleConfirmUpdate = async () => {
-    await actions.updateContact(contact.id, edit.name, edit.email, () => {
-      onUpdate();
-      edit.closeDialog();
-    });
+    await updateContact(contact.id, edit.name, edit.email);
+    edit.closeDialog();
   };
 
   const handleConfirmDelete = async () => {
-    await actions.deleteContact(contact.id, contact.name, () => {
-      onDelete(contact.id);
-      del.closeDialog();
-    });
+    await deleteContact(contact.id, contact.name);
+    del.closeDialog();
   };
+
+  const isDeleting = deleteId === contact.id;
+  const isUpdating = updateId === contact.id;
 
   return (
     <>
@@ -45,11 +39,6 @@ const ContactCard: React.FC<Props> = ({ contact, onDelete, onUpdate }) => {
           p: 2,
           borderRadius: 3,
           gap: 2,
-          transition: "all 0.3s ease",
-          "&:hover": {
-            boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-            transform: "translateY(-2px)",
-          },
         }}
       >
         <Box
@@ -73,23 +62,14 @@ const ContactCard: React.FC<Props> = ({ contact, onDelete, onUpdate }) => {
         <Stack
           direction={{ xs: "column", sm: "row" }}
           spacing={1}
-          sx={{
-            flexShrink: 0,
-            width: { xs: "100%", sm: "auto" },
-          }}
+          sx={{ flexShrink: 0, width: { xs: "100%", sm: "auto" } }}
         >
           <Button
             fullWidth
             variant="contained"
             color="success"
-            onClick={() => actions.sendMessage(contact.name, contact.email)}
+            onClick={() => sendMessage(contact.name, contact.email)}
             startIcon={<Send />}
-            sx={{
-              transition: "all 0.2s ease",
-              "&:hover": {
-                transform: "scale(1.05)",
-              },
-            }}
           >
             שלח
           </Button>
@@ -99,14 +79,9 @@ const ContactCard: React.FC<Props> = ({ contact, onDelete, onUpdate }) => {
             color="info"
             onClick={edit.openDialog}
             startIcon={<Edit />}
-            sx={{
-              transition: "all 0.2s ease",
-              "&:hover": {
-                transform: "scale(1.05)",
-              },
-            }}
+            disabled={isUpdating}
           >
-            ערוך
+            {isUpdating ? "שומר..." : "ערוך"}
           </Button>
           <Button
             fullWidth
@@ -114,14 +89,9 @@ const ContactCard: React.FC<Props> = ({ contact, onDelete, onUpdate }) => {
             color="error"
             onClick={del.openDialog}
             startIcon={<Delete />}
-            sx={{
-              transition: "all 0.2s ease",
-              "&:hover": {
-                transform: "scale(1.05)",
-              },
-            }}
+            disabled={isDeleting}
           >
-            מחק
+            {isDeleting ? "מוחק..." : "מחק"}
           </Button>
         </Stack>
       </Paper>
@@ -144,6 +114,4 @@ const ContactCard: React.FC<Props> = ({ contact, onDelete, onUpdate }) => {
       />
     </>
   );
-};
-
-export default ContactCard;
+}

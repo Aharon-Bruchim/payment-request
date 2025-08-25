@@ -7,8 +7,6 @@ const PaymentRequests: React.FC = () => {
   const [searchParams] = useSearchParams();
   const clientName = searchParams.get("clientName") || "";
   const clientEmail = searchParams.get("clientEmail") || "";
-  console.log("clientName", clientName);
-  console.log("clientEmail", clientEmail);
 
   return (
     <Container maxWidth="md">

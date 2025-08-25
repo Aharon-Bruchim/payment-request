@@ -1,10 +1,17 @@
-import React from "react";
+import { lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import PaymentRequestsPage from "../../pages/PaymentRequestsPage/PaymentRequestsPage";
-import ContactsPage from "../../pages/ContactsPage/ContactsPage";
-import NewContactForm from "../../components/Contacts/NewContactForm/NewContactForm";
 
-const AppRoutes: React.FC = () => {
+const ContactsPage = lazy(
+  () => import("../../pages/ContactsPage/ContactsPage")
+);
+const NewContactForm = lazy(
+  () => import("../../components/Contacts/NewContactForm/NewContactForm")
+);
+const PaymentRequestsPage = lazy(
+  () => import("../../pages/PaymentRequestsPage/PaymentRequestsPage")
+);
+
+export default function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/contacts" replace />} />
@@ -13,6 +20,4 @@ const AppRoutes: React.FC = () => {
       <Route path="/requests" element={<PaymentRequestsPage />} />
     </Routes>
   );
-};
-
-export default AppRoutes;
+}
